@@ -4,7 +4,10 @@ import org.launchcode.models.Cheese;
 import org.launchcode.models.CheeseData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Created by laura on 3/8/2017.
@@ -28,11 +31,19 @@ public class CheeseController {
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String displayAddCheeseForm(Model model){
         model.addAttribute("title", "Add Cheeses");
+        model.addAttribute(new Cheese());
+        model.addAttribute("cheeseTypes", CheeseType.values());
         return "cheese/add";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute Cheese newCheese){
+    public String processAddCheeseForm(@ModelAttribute @Valid Cheese newCheese,
+                                       Errors errors, Model model){
+        if (errors.hasErrors()){
+            model.addAttribute("title", "Add Cheeses");
+            return "cheese/add";
+        }
+
         CheeseData.add(newCheese);
         // Redirect to /cheese
         return "redirect:";
@@ -61,14 +72,16 @@ public class CheeseController {
         Cheese editCheese = CheeseData.getById(cheeseId);
         model.addAttribute("cheese", editCheese);
         model.addAttribute("title","Edit Cheese " + editCheese.getName() + " (id=" + editCheese.getCheeseId() + ")");
+        model.addAttribute("cheeseTypes", CheeseType.values());
         return "cheese/edit";
     }
 
     @RequestMapping(value = "edit/{cheeseId}", method = RequestMethod.POST)
-    public String processEditForm(int cheeseId, String name, String description){
+    public String processEditForm(int cheeseId, String name, String description, CheeseType cheeseType){
         Cheese editCheese = CheeseData.getById(cheeseId);
         editCheese.setName(name);
         editCheese.setDescription(description);
+        editCheese.setType(cheeseType);
         return "redirect:/cheese";
     }
 }

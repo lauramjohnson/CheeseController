@@ -1,21 +1,28 @@
 package org.launchcode.models;
 
+import org.launchcode.controllers.CheeseType;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * Created by laura on 3/12/2017.
  */
 public class Cheese {
+    @NotNull
+    @Size(min=3, max=15)
     private String name;
-    private String description;
-    private int cheeseId;
 
+    @NotNull
+    @Size(min=1, message = "There must be a description")
+    private String description;
+    private CheeseType type;
+
+    private int cheeseId;
     private static int nextId = 1;
 
     public int getCheeseId() {
         return cheeseId;
-    }
-
-    public void setCheeseId(int cheeseId) {
-        this.cheeseId = cheeseId;
     }
 
     public String getName() {
@@ -37,6 +44,14 @@ public class Cheese {
     public Cheese(){
         cheeseId = nextId;
         nextId++;
+    }
+
+    public CheeseType getType() {
+        return type;
+    }
+
+    public void setType(CheeseType type) {
+        this.type = type;
     }
 
     public Cheese(String name, String description) {
