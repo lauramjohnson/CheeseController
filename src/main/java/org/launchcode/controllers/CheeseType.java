@@ -12,7 +12,7 @@ public enum CheeseType {
         return name;
     }
 
-    private final String name;
+    private String name;
         CheeseType(String name){
             this.name = name;
         }
